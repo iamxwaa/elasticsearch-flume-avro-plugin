@@ -1,0 +1,13 @@
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(ScalaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    compile project(':flume-avro')
+    compile 'commons-io:commons-io:2.4'
+    compile 'commons-lang:commons-lang:2.6'
+}

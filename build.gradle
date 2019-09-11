@@ -1,0 +1,28 @@
+allprojects {
+    apply plugin: 'scala'
+    apply plugin: 'idea'
+    group 'org.knirxot'
+    version '1.0-SNAPSHOT'
+    sourceCompatibility = 1.8
+    repositories {
+        maven {
+            url "http://nexus.maven:8081/repository/maven-public/"
+        }
+        mavenLocal()
+    }
+    dependencies {
+        compile 'org.scala-lang:scala-library:2.11.12'
+        zinc 'com.typesafe.zinc:zinc:0.3.9'
+    }
+}
+
+project.subprojects.each { p ->
+    if (p.name.startsWith("elasticsearch-flume-avro-plugin-")) {
+        project(p.name) {
+            dependencies {
+                compile project(':flume-avro')
+                compile project(':flume-avro-resource')
+            }
+        }
+    }
+}

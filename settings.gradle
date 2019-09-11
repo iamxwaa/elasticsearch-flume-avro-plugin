@@ -1,0 +1,8 @@
+rootProject.name = 'elasticsearch-flume-avro-plugin'
+
+include 'flume-avro'
+include 'flume-avro-resource'
+include 'elasticsearch-flume-avro-plugin-2x'
+include 'elasticsearch-flume-avro-plugin-5x'
+include 'elasticsearch-flume-avro-plugin-6x'
+

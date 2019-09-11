@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <title>Flume Avro</title>
+    <link href="_flume/css/bootstrap.min.css" rel="stylesheet">
+    </link>
+    <style>
+        li.list-group-item {
+            border-right-color: #337ab8;
+            border-left-color: #337ab8;
+        }
+
+        li.list-group-item:last-of-type {
+            border-bottom-color: #337ab8;
+        }
+
+        .navbar-inverse {
+            border-radius: 0;
+            background-color: #337ab7;
+            border-color: #337ab8;
+            color: #fff;
+        }
+
+        ul.index-list {
+            position: absolute;
+            z-index: 1000;
+            list-style: none;
+            padding: 0;
+            margin-top: 35px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            border-bottom: none;
+        }
+
+        ul.index-list li {
+            padding: 6px 12px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+            width: 337px;
+        }
+
+        ul.index-list li:hover {
+            background-color: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" style="color: #fff;" href="#">ES数据抽取插件</a>
+            </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <div style="padding: 50px 100px 10px;">
+                    <form>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    目标Source配置
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <span class="input-group-addon">IP</span>
+                                    <input id="host" type="text" class="form-control" placeholder="请输入IP">
+                                </div>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-addon">端口</span>
+                                    <input id="port" type="number" class="form-control" placeholder="请输入端口" value="-1">
+                                </div>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据类型</span>
+                                    <input id="dataType" type="text" class="form-control" placeholder="请输入数据类型">
+                                </div>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-addon">缓存类型</span>
+                                    <select id="channelType" class="form-control">
+                                        <option>memory</option>
+                                        <option>file</option>
+                                    </select>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    导出索引配置
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <span class="input-group-addon">索引名称</span>
+                                    <!-- <input id="index" type="text" class="form-control" placeholder="请输入索引名称"> -->
+                                    <select id="index-list" class="form-control">
+                                    </select>
+                                </div>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-addon">缓存时间(秒)</span>
+                                    <input id="timeValue" type="number" class="form-control" placeholder="请输入缓存时间"
+                                        value="300">
+                                </div>
+                                <br>
+                                <div class="input-group">
+                                    <span class="input-group-addon">分页大小</span>
+                                    <input id="size" type="number" class="form-control" placeholder="请输入分页大小"
+                                        value="5000">
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                        <button type="button" id="submit" class="btn btn-primary btn-lg btn-block">提交运行</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <ul class="list-group" style="padding-top: 50px;" id="list_info">
+                    <li class="list-group-item active">信息</li>
+                    <li class="list-group-item">
+                        <strong>状态:</strong>&nbsp;&nbsp;<span id="isFinish">-</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>索引:</strong>&nbsp;&nbsp;<span id="indexName">-</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>开始时间:</strong>&nbsp;&nbsp;<span id="startTime">0000-00-00 00:00:00</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>预计结束时间:</strong>&nbsp;&nbsp;<span id="expectTime">0000-00-00 00:00:00</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>结束时间:</strong>&nbsp;&nbsp;<span id="endTime">0000-00-00 00:00:00</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>总数据量:</strong>&nbsp;&nbsp;<span id="total">0</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>已获取数据量:</strong>&nbsp;&nbsp;<span id="sendTotal">0</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>进度:</strong>&nbsp;&nbsp;<span id="percent">0 %</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="_flume/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="_flume/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="_flume/js/index.js" type="text/javascript"></script>
+
+</html>
