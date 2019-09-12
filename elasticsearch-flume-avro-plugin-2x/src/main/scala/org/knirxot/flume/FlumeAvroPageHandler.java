@@ -1,16 +1,12 @@
 package org.knirxot.flume;
 
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.http.netty.NettyHttpChannel;
 import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestController;
 import org.elasticsearch.rest.RestRequest;
 import org.knirxot.flume.response.PageResponse;
-
-import java.io.IOException;
 
 /**
  * Created by xw on 2019/9/4.

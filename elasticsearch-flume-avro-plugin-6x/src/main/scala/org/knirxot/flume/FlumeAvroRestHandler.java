@@ -4,9 +4,9 @@ import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.rest.RestController;
 import org.elasticsearch.rest.RestRequest;
-import org.knirxot.flume.client.SearchClient;
 import org.knirxot.flume.agent.config.Config;
 import org.knirxot.flume.agent.config.DataInfo;
+import org.knirxot.flume.client.SearchClient;
 import org.knirxot.flume.response.RestOkResponse;
 import org.knirxot.flume.response.UnknownResponse;
 
@@ -24,6 +24,7 @@ public class FlumeAvroRestHandler extends FlumeAvroBaseHandler {
     protected FlumeAvroRestHandler(Settings settings, RestController restController) {
         super(settings, restController);
         registerHandler("GET", "/_flume/export");
+        registerHandler("GET", "/_flume/stop");
         registerHandler("GET", "/_flume/info");
         registerHandler("GET", "/_flume/config");
     }
@@ -57,6 +58,13 @@ public class FlumeAvroRestHandler extends FlumeAvroBaseHandler {
                 return channel -> channel.sendResponse(new RestOkResponse());
             }
             logger.warn("/_flume/export with bad parameters");
+        }
+        if (request.path().endsWith("/stop")) {
+            if (null != searchClient) {
+                searchClient.stop();
+                return channel -> channel.sendResponse(new RestOkResponse("{\"status\":\"STOP\"}"));
+            }
+            return channel -> channel.sendResponse(new RestOkResponse("{\"status\":\"NOT RUNNING\"}"));
         }
         return channel -> channel.sendResponse(new UnknownResponse());
     }

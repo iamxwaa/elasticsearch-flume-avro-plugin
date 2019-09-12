@@ -36,6 +36,12 @@ class SearchClient(client: NodeClient, settings: Settings, config: Config) exten
 
   private val exec = Executors.newCachedThreadPool()
 
+  private var stopFlag = false
+
+  def stop() = {
+    stopFlag = true
+  }
+
   override def run(): Unit = {
     try {
       logger.info(s"Start flume avro client(${config.avroConfig.info})")
@@ -89,7 +95,7 @@ class SearchClient(client: NodeClient, settings: Settings, config: Config) exten
     if (run) {
       dataInfo.total.value = dataInfo.total.value + response.getHits.totalHits
       send(response)
-      while (run) {
+      while (run && !stopFlag) {
         logger.info(s"${config.esConfig.index}[$id][$max] ($sendTotal/${dataInfo.total.value})")
         val scrollRequest: SearchScrollRequest = new SearchScrollRequest(response.getScrollId)
         scrollRequest.scroll(TimeValue.timeValueSeconds(config.esConfig.timeValue))

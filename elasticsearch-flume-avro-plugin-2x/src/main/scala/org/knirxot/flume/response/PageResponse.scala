@@ -1,6 +1,6 @@
 package org.knirxot.flume.response
 
-import org.elasticsearch.rest.{RestRequest, RestStatus}
+import org.elasticsearch.rest.RestRequest
 
 /**
  * Created by xw on 2019/9/4.

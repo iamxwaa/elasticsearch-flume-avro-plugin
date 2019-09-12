@@ -3,7 +3,6 @@ package org.knirxot.flume.client
 import java.text.SimpleDateFormat
 import java.util
 import java.util.Date
-import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.flume.Event
@@ -30,6 +29,12 @@ class SearchClient(client: Client, settings: Settings, config: Config) extends R
   private val startTime = System.currentTimeMillis()
 
   private val dataInfo: DataInfo = DataInfo()
+
+  private var stopFlag = false
+
+  def stop() = {
+    stopFlag = true
+  }
 
   override def run(): Unit = {
     try {
@@ -69,7 +74,7 @@ class SearchClient(client: Client, settings: Settings, config: Config) extends R
     if (run) {
       dataInfo.total.value = dataInfo.total.value + response.getHits.totalHits
       send(response)
-      while (run) {
+      while (run && !stopFlag) {
         logger.info(s"${config.esConfig.index} ($sendTotal/${dataInfo.total.value})")
         val scrollRequest: SearchScrollRequest = new SearchScrollRequest(response.getScrollId)
         scrollRequest.scroll(TimeValue.timeValueSeconds(config.esConfig.timeValue))
