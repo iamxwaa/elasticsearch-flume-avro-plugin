@@ -35,14 +35,16 @@ $(function () {
     var freeze = function (a) {
         needFreeze = a
         if (a) {
-            $("#index").attr({ "readonly": "readonly" })
+            $("#index-list").attr({ "disabled": "disabled" })
+            $("#channelType").attr({ "disabled": "disabled" })
             $("#timeValue").attr({ "readonly": "readonly" })
             $("#size").attr({ "readonly": "readonly" })
             $("#host").attr({ "readonly": "readonly" })
             $("#port").attr({ "readonly": "readonly" })
             $("#dataType").attr({ "readonly": "readonly" })
         } else {
-            $("#index").removeAttr("readonly")
+            $("#index-list").removeAttr("disabled")
+            $("#channelType").removeAttr("disabled")
             $("#timeValue").removeAttr("readonly")
             $("#size").removeAttr("readonly")
             $("#host").removeAttr("readonly")
@@ -102,13 +104,22 @@ $(function () {
         })
     })
 
+    $("#stop").click(function () {
+        GET("/_flume/stop", function (data) {
+            alert(data.status)
+        })
+    })
+
     var getIndices = function () {
         GET("/_cat/indices", function (data) {
             var lines = data.split("\n")
             var list = $("#index-list")
             for (var i in lines) {
                 if ("" != lines[i]) {
-                    list.append("<option>" + lines[i].split(" ")[2] + "</option>")
+                    var itemName = lines[i].match("(open|close)\\s{1,2}([^ ]*)")
+                    if ("close" != itemName[1]) {
+                        list.append("<option>" + itemName[2] + "</option>")
+                    }
                 }
             }
         })
